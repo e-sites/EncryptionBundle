@@ -1,0 +1,25 @@
+{
+  "name": "esites/encryption-bundle",
+  "description": "Encrypt and decrypt database values",
+  "type": "symfony-bundle",
+  "authors": [
+    {
+      "name": "Joshwin Zuidema",
+      "email": "jzuidema@e-sites.nl"
+    }
+  ],
+  "license": "proprietary",
+  "require": {
+    "php": ">=7.2",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "symfony/framework-bundle": "^3.4|^4.0",
+    "paragonie/halite": "^4.6",
+    "doctrine/orm": "^2.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Esites\\EncryptionBundle\\": "src/"
+    }
+  }
+}
