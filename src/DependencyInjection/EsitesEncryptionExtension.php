@@ -33,7 +33,7 @@ class EsitesEncryptionExtension extends Extension
             ConfigConstants::getParameterKeyName(
                 ConfigConstants::CONFIG_USER_CLASS
             ),
-            $config[ConfigConstants::CONFIG_USER_CLASS]
+            $config[ConfigConstants::CONFIG_USER_CLASS] ?? null
         );
 
         $container->setParameter(

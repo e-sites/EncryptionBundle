@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Esites\EncryptionBundle\Configuration\Encrypted;
-use Esites\EncryptionBundle\Exception\NoEncryptionKeyException;
 use ParagonIE\Halite\Alerts\CannotPerformOperation;
 use ParagonIE\Halite\Alerts\InvalidDigestLength;
 use ParagonIE\Halite\Alerts\InvalidKey;
@@ -44,6 +43,11 @@ class EncryptionListener extends AbstractListener
                 $entity,
                 $property->getName()
             );
+
+            if (!is_string($value)) {
+                continue;
+            }
+
             $value = $this->encryptionHelper->decrypt($value);
 
             $classMetadata->setFieldValue(
@@ -60,7 +64,6 @@ class EncryptionListener extends AbstractListener
      * @throws InvalidKey
      * @throws InvalidMessage
      * @throws InvalidType
-     * @throws NoEncryptionKeyException
      */
     public function processProperty(
         ReflectionProperty $property,
@@ -72,48 +75,45 @@ class EncryptionListener extends AbstractListener
             return;
         }
 
-        $value = $classMetadata->getFieldValue(
-            $entity,
-            $property->getName()
-        );
+        $oldValue = $changeSet[$property->getName()][0] ?? null;
+        $newValue = $changeSet[$property->getName()][1] ?? null;
 
-        if ($value === null) {
+        if (!is_string($newValue)) {
             return;
         }
 
-        $encrypt = $this->getEncryptionValue($changeSet[$property->getName()]);
+        if (!is_string($oldValue) && $oldValue !== null) {
+            return;
+        }
+
+        $encryptedValue = $this->getEncryptedValue($oldValue, $newValue);
 
         $classMetadata->setFieldValue(
             $entity,
             $property->getName(),
-            $encrypt
+            $encryptedValue
         );
     }
 
     /**
-     * @throws NoEncryptionKeyException
      * @throws CannotPerformOperation
      * @throws InvalidDigestLength
      * @throws InvalidKey
      * @throws InvalidMessage
      * @throws InvalidType
      */
-    private function getEncryptionValue(array $changes): ?string
+    private function getEncryptedValue(string $oldValue, string $newValue): ?string
     {
-        if (!isset($changes[1])) {
-            return null;
-        }
-
         $isValidEncryption = $this->encryptionHelper->isValidEncryption(
-            $changes[0],
-            $changes[1]
+            $oldValue,
+            $newValue
         );
 
         if ($isValidEncryption) {
-            return $changes[0];
+            return $oldValue;
         }
 
-        return $this->encryptionHelper->encrypt($changes[1]);
+        return $this->encryptionHelper->encrypt($newValue);
     }
 
     public function hasAnnotation(ReflectionProperty $reflectionProperty): bool

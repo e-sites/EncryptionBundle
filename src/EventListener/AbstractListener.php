@@ -3,20 +3,15 @@
 namespace Esites\EncryptionBundle\EventListener;
 
 use Doctrine\Common\Annotations\CachedReader;
-use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\OnFlushEventArgs;
-use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\ORM\UnitOfWork;
 use Esites\EncryptionBundle\Helper\EncryptionHelper;
-use Esites\UserBundle\Entity\User;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
-use Symfony\Component\Security\Acl\Util\ClassUtils;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 abstract class AbstractListener
 {
@@ -41,8 +36,10 @@ abstract class AbstractListener
     protected $encryptionHelper;
 
 
-    public function __construct(CachedReader $annotationReader, EncryptionHelper $encryptionHelper)
-    {
+    public function __construct(
+        CachedReader $annotationReader,
+        EncryptionHelper $encryptionHelper
+    ) {
         $this->annotationReader = $annotationReader;
         $this->encryptionHelper = $encryptionHelper;
     }
@@ -82,8 +79,8 @@ abstract class AbstractListener
 
         $entity = $args->getEntity();
 
-        $realClass = ClassUtils::getRealClass($entity);
-        $reflectionClass = new ReflectionClass($realClass);
+        $class = get_class($entity);
+        $reflectionClass = new ReflectionClass($class);
 
         /** @var ReflectionProperty[] $properties */
         $properties = [];
@@ -100,11 +97,15 @@ abstract class AbstractListener
             return;
         }
 
-        $classMetadata = $this->entityManager->getClassMetadata($realClass);
+        $classMetadata = $this->entityManager->getClassMetadata($class);
         $changeSet = $this->getChangeSet(
             $entity,
             $classMetadata
         );
+
+        if (!$changeSet) {
+            return;
+        }
 
         foreach ($properties as $property) {
             $this->processProperty(
@@ -116,10 +117,12 @@ abstract class AbstractListener
         }
 
         if ($this->unitOfWork->getSingleIdentifierValue($entity) !== null) {
-//            $this->unitOfWork->recomputeSingleEntityChangeSet(
-//                $classMetadata,
-//                $entity
-//            );
+            $this->unitOfWork->recomputeSingleEntityChangeSet(
+                $classMetadata,
+                $entity
+            );
+
+            return;
         }
     }
 

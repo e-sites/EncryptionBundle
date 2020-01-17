@@ -2,7 +2,6 @@
 
 namespace Esites\EncryptionBundle\Helper;
 
-use Esites\EncryptionBundle\Exception\NoEncryptionKeyException;
 use Exception;
 use ParagonIE\Halite\Alerts\CannotPerformOperation;
 use ParagonIE\Halite\Alerts\InvalidDigestLength;
@@ -45,7 +44,6 @@ class EncryptionHelper
     /**
      * @throws CannotPerformOperation
      * @throws InvalidKey
-     * @throws NoEncryptionKeyException
      * @throws InvalidDigestLength
      * @throws InvalidMessage
      * @throws InvalidType
@@ -108,7 +106,6 @@ class EncryptionHelper
     /**
      * @throws CannotPerformOperation
      * @throws InvalidKey
-     * @throws NoEncryptionKeyException
      */
     private function getEncryptionKey(): EncryptionKey
     {
@@ -127,17 +124,19 @@ class EncryptionHelper
      */
     private function generateEncryptionKey(): void
     {
-        $hashKey = KeyFactory::generateEncryptionKey();
-        $rawKey = $hashKey->getRawKeyMaterial();
+        $this->createEncryptionKeyDirectory();
 
-        $this->fileSystem->dumpFile(
-            $this->encryptionKeyFile,
-            $rawKey
+        $encryptionKey = KeyFactory::generateEncryptionKey();
+        KeyFactory::save($encryptionKey, $this->encryptionKeyFile);
+    }
+
+    private function createEncryptionKeyDirectory() {
+        $this->fileSystem->mkdir(
+            dirname($this->encryptionKeyFile)
         );
     }
 
     /**
-     * @throws NoEncryptionKeyException
      * @throws InvalidKey
      * @throws CannotPerformOperation
      */
@@ -147,21 +146,10 @@ class EncryptionHelper
             $this->generateEncryptionKey();
         }
 
-        $encryptionKey = file_get_contents($this->encryptionKeyFile);
-
-        if (empty($encryptionKey)) {
-            $this->generateEncryptionKey();
-
-            $encryptionKey = file_get_contents($this->encryptionKeyFile);
-        }
-
-        if (empty($encryptionKey)) {
-            throw new NoEncryptionKeyException();
-        }
-
-        $key = KeyFactory::importEncryptionKey(
-            new HiddenString($encryptionKey)
+        $key = KeyFactory::loadEncryptionKey(
+            $this->encryptionKeyFile
         );
+
         $this->encryptionKey = $key;
 
         return $key;

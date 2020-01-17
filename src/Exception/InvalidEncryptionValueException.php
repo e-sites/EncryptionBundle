@@ -4,6 +4,6 @@ namespace Esites\EncryptionBundle\Exception;
 
 use Exception;
 
-class NoEncryptionKeyException extends Exception
+class InvalidEncryptionValueException extends Exception
 {
 }
