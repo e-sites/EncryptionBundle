@@ -102,7 +102,7 @@ class EncryptionListener extends AbstractListener
      * @throws InvalidMessage
      * @throws InvalidType
      */
-    private function getEncryptedValue(string $oldValue, string $newValue): ?string
+    private function getEncryptedValue(?string $oldValue, string $newValue): ?string
     {
         $isValidEncryption = $this->encryptionHelper->isValidEncryption(
             $oldValue,
