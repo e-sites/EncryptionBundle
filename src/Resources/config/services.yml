@@ -1,3 +1,9 @@
+parameters:
+  esites_encryption_bundle.encryption_key_file: ~
+  esites_encryption_bundle.hash_algorithm: ~
+  esites_encryption_bundle.username_field: ~
+  esites_encryption_bundle.user_class: ~
+
 services:
   _defaults:
     autowire: true
@@ -7,6 +13,7 @@ services:
   Esites\EncryptionBundle\Helper\EncryptionHelper:
     arguments:
       $encryptionKeyFile: '%esites_encryption_bundle.encryption_key_file%'
+      $hashAlgorithm: '%esites_encryption_bundle.hash_algorithm%'
     public: true
 
   Esites\EncryptionBundle\Provider\UserProvider:

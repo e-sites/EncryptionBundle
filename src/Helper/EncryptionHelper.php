@@ -33,12 +33,20 @@ class EncryptionHelper
     private $fileSystem;
 
     /**
+     * @var string|null
+     */
+    private $hashAlgorithm;
+
+    /**
      * {@inheritdoc}
      */
-    public function __construct(string $encryptionKeyFile)
-    {
+    public function __construct(
+        string $encryptionKeyFile,
+        string $hashAlgorithm
+    ) {
         $this->encryptionKeyFile = $encryptionKeyFile;
         $this->fileSystem = new Filesystem();
+        $this->hashAlgorithm = $hashAlgorithm;
     }
 
     /**
@@ -98,7 +106,7 @@ class EncryptionHelper
         }
 
         return hash(
-            'sha256',
+            $this->hashAlgorithm,
             $string
         );
     }

@@ -15,7 +15,7 @@ class EsitesEncryptionExtension extends Extension
     /**
      * @throws Exception
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $processor = new Processor();
@@ -41,6 +41,13 @@ class EsitesEncryptionExtension extends Extension
                 ConfigConstants::CONFIG_ENCRYPTION_KEY_FILE
             ),
             $config[ConfigConstants::CONFIG_ENCRYPTION_KEY_FILE]
+        );
+
+        $container->setParameter(
+            ConfigConstants::getParameterKeyName(
+                ConfigConstants::CONFIG_HASH_ALGORITHM
+            ),
+            $config[ConfigConstants::CONFIG_HASH_ALGORITHM]
         );
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));

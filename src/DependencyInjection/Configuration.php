@@ -23,6 +23,9 @@ class Configuration implements ConfigurationInterface
             ->scalarNode(ConfigConstants::CONFIG_ENCRYPTION_KEY_FILE)
                 ->defaultValue('%kernel.root_dir%/encryption/key')
             ->end()
+            ->scalarNode(ConfigConstants::CONFIG_HASH_ALGORITHM)
+                ->defaultValue('sha256')
+            ->end()
         ;
 
         return $treeBuilder;
