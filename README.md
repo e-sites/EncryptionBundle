@@ -18,4 +18,5 @@ esites_encryption:
     username_field: username   # default value, the property name for the username in the user entity
     user_class: App\Entity\User   # not required, full namespace of the user entity
     encryption_key_file: '%kernel.root_dir%/encryption/key'   # default value, directory and filename for the encryption key
+    hash_algorithm: 'sha256'   # default value, algorithm used to hash strings. uses the native php hash() function
 ```

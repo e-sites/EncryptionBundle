@@ -9,6 +9,7 @@ class ConfigConstants
     public const CONFIG_USERNAME_FIELD = 'username_field';
     public const CONFIG_USER_CLASS = 'user_class';
     public const CONFIG_ENCRYPTION_KEY_FILE = 'encryption_key_file';
+    public const CONFIG_HASH_ALGORITHM = 'hash_algorithm';
 
     public static function getParameterKeyName(string $key): string
     {
