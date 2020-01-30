@@ -6,11 +6,23 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Tools\SchemaTool;
+use Esites\EncryptionBundle\Helper\EncryptionHelper;
 use Esites\EncryptionBundle\Tests\Entity\EncryptionEntity;
 use FunctionalTester;
 
 class EncryptionCest
 {
+    /**
+     * @var EncryptionHelper
+     */
+    private $encryptionHelper;
+
+
+    public function _before(FunctionalTester $I): void
+    {
+        $this->encryptionHelper = $I->grabService(EncryptionHelper::class);
+    }
+
     private function getEntityManager(FunctionalTester $I): EntityManager
     {
         /** @var EntityManager $currentEntityManager */
@@ -41,15 +53,25 @@ class EncryptionCest
     {
         $entityManager = $this->getEntityManager($I);
 
+        $value = 'test';
+
         $encryptionEntity = new EncryptionEntity();
-        $encryptionEntity->setEncryptedValue('test');
+        $encryptionEntity->setEncryptedValue($value);
 
         $entityManager->persist($encryptionEntity);
         $entityManager->flush();
 
-        $testRepository = $entityManager->getRepository(EncryptionEntity::class);
-        $entity = $testRepository->findOneBy([]);
+        $data = $entityManager->getConnection()->fetchAssoc('SELECT * FROM encryption_entity WHERE id=?', [
+            $encryptionEntity->getId()
+        ]);
 
-        $I->assertInstanceOf(EncryptionEntity::class, $entity);
+        $I->assertNotEmpty($data['encrypted_value']);
+
+        $I->assertTrue(
+            $this->encryptionHelper->isValidEncryption(
+                $data['encrypted_value'],
+                $value
+            )
+        );
     }
 }
