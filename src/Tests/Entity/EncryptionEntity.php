@@ -7,7 +7,7 @@ use Esites\EncryptionBundle\Configuration\Encrypted;
 
 /**
  * @ORM\Table(name="encryption_entity")
- * @ORM\Entity(repositoryClass="Esites\EncryptionBundle\Tests\Repository\TestRepository")
+ * @ORM\Entity(repositoryClass="Esites\EncryptionBundle\Tests\Repository\EncryptionRepository")
  */
 class EncryptionEntity
 {

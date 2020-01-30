@@ -5,10 +5,6 @@ modules:
   enabled:
     - Symfony
     - Cli
-    - Db:
-        dsn: 'sqlite:///:memory'
-        user: test
-        password: test
     - Doctrine2:
         depends: Symfony
     - \Helper\Functional
