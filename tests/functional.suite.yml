@@ -1,0 +1,12 @@
+# Codeception Test Suite Configuration
+
+actor: FunctionalTester
+modules:
+    enabled:
+        - Symfony
+        - Cli
+        - Doctrine2:
+              depends: Symfony
+        - \Helper\Functional
+        - Asserts
+error_level: "E_STRICT"

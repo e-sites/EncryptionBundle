@@ -1,0 +1,7 @@
+# Codeception Test Suite Configuration
+
+actor: AcceptanceTester
+modules:
+    enabled:
+        - \Helper\Acceptance
+    step_decorators: ~        
