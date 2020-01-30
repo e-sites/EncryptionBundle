@@ -1,25 +1,34 @@
 {
-  "name": "esites/encryption-bundle",
-  "description": "Encrypt and decrypt database values",
-  "type": "symfony-bundle",
-  "authors": [
-    {
-      "name": "Joshwin Zuidema",
-      "email": "jzuidema@e-sites.nl"
+    "name": "esites/encryption-bundle",
+    "description": "Encrypt and decrypt database values",
+    "type": "symfony-bundle",
+    "authors": [
+        {
+            "name": "Joshwin Zuidema",
+            "email": "jzuidema@e-sites.nl"
+        }
+    ],
+    "license": "proprietary",
+    "require": {
+        "php": ">=7.2",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "symfony/framework-bundle": "^3.4|^4.0",
+        "paragonie/halite": "^4.6",
+        "doctrine/orm": "^2.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Esites\\EncryptionBundle\\": "src/"
+        }
+    },
+    "require-dev": {
+        "codeception/codeception": "4.0.*",
+        "codeception/module-phpbrowser": "^1.0.0",
+        "codeception/module-asserts": "^1.0.0",
+        "codeception/module-symfony": "^1.0",
+        "codeception/module-db": "^1.0",
+        "codeception/module-cli": "^1.0",
+        "codeception/module-doctrine2": "^1.0"
     }
-  ],
-  "license": "proprietary",
-  "require": {
-    "php": ">=7.2",
-    "ext-curl": "*",
-    "ext-json": "*",
-    "symfony/framework-bundle": "^3.4|^4.0",
-    "paragonie/halite": "^4.6",
-    "doctrine/orm": "^2.7"
-  },
-  "autoload": {
-    "psr-4": {
-      "Esites\\EncryptionBundle\\": "src/"
-    }
-  }
 }

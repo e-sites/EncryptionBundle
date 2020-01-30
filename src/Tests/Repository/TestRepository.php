@@ -1,6 +1,6 @@
 <?php
 
-namespace Esites\EncryptionBundle\Repository;
+namespace Esites\EncryptionBundle\Tests\Repository;
 
 use Doctrine\ORM\EntityRepository;
 

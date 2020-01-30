@@ -1,12 +1,12 @@
 <?php
 
-namespace Esites\EncryptionBundle\Entity;
+namespace Esites\EncryptionBundle\Tests\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="test_entity")
- * @ORM\Entity(repositoryClass="Esites\EncryptionBundle\Repository\TestRepository")
+ * @ORM\Entity(repositoryClass="Esites\EncryptionBundle\Tests\Repository\TestRepository")
  */
 class TestEntity
 {
