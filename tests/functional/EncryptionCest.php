@@ -3,8 +3,6 @@
 namespace EncryptionBundleTests\functional;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Cache\ArrayCache;
-use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -17,24 +15,21 @@ class EncryptionCest
     {
         /** @var EntityManager $currentEntityManager */
         $currentEntityManager = $I->grabService('doctrine.orm.entity_manager');
+        $configuration = $currentEntityManager->getConfiguration();
 
-        $config = new Configuration();
-        $config->setEntityNamespaces(array('EncryptionBundleTests' => 'EncryptionBundle\Tests\Entity'));
-        $config->setAutoGenerateProxyClasses(true);
-        $config->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader()));
-        $config->setProxyDir(\sys_get_temp_dir());
-        $config->setProxyNamespace('EncryptionBundleTests\Entity');
-        $config->setQueryCacheImpl(new ArrayCache());
-        $config->setMetadataCacheImpl(new ArrayCache());
+        $configuration->setEntityNamespaces(['EncryptionBundleTests' => 'EncryptionBundle\Tests\Entity']);
+        $configuration->setMetadataDriverImpl(new AnnotationDriver(new AnnotationReader()));
+        $configuration->setProxyNamespace('EncryptionBundleTests\Entity');
 
-        $entityManager = $currentEntityManager::create($currentEntityManager->getConnection(), $config);
+        $entityManager = $currentEntityManager::create($currentEntityManager->getConnection(), $configuration);
 
         $schemaTool = new SchemaTool($entityManager);
         $metadata = $entityManager->getClassMetadata(EncryptionEntity::class);
         $sqlDiff = $schemaTool->getUpdateSchemaSql([$metadata], true);
 
         foreach ($sqlDiff as $query) {
-            $entityManager->getConnection()
+            $entityManager
+                ->getConnection()
                 ->executeQuery($query)
             ;
         }
