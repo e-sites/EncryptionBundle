@@ -3,12 +3,13 @@
 namespace Esites\EncryptionBundle\Tests\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Esites\EncryptionBundle\Configuration\Encrypted;
 
 /**
- * @ORM\Table(name="test_entity")
+ * @ORM\Table(name="encryption_entity")
  * @ORM\Entity(repositoryClass="Esites\EncryptionBundle\Tests\Repository\TestRepository")
  */
-class TestEntity
+class EncryptionEntity
 {
     /**
      * @var int|null
@@ -22,16 +23,11 @@ class TestEntity
     /**
      * @var string|null
      *
+     * @Encrypted()
+     *
      * @ORM\Column(name="encrypted_value", type="string", nullable=true)
      */
     private $encryptedValue;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="hashed_value", type="string", nullable=true)
-     */
-    private $hashedValue;
 
     /**
      * @var string|null
@@ -43,6 +39,8 @@ class TestEntity
     /**
      * @var \DateTime|null
      *
+     * @Encrypted()
+     *
      * @ORM\Column(name="date_time_value", type="datetime", nullable=true)
      */
     private $dateTimeValue;
@@ -53,7 +51,7 @@ class TestEntity
         return $this->id;
     }
 
-    public function setId(?int $id): TestEntity
+    public function setId(?int $id): EncryptionEntity
     {
         $this->id = $id;
 
@@ -65,21 +63,9 @@ class TestEntity
         return $this->encryptedValue;
     }
 
-    public function setEncryptedValue(?string $encryptedValue): TestEntity
+    public function setEncryptedValue(?string $encryptedValue): EncryptionEntity
     {
         $this->encryptedValue = $encryptedValue;
-
-        return $this;
-    }
-
-    public function getHashedValue(): ?string
-    {
-        return $this->hashedValue;
-    }
-
-    public function setHashedValue(?string $hashedValue): TestEntity
-    {
-        $this->hashedValue = $hashedValue;
 
         return $this;
     }
@@ -89,7 +75,7 @@ class TestEntity
         return $this->stringValue;
     }
 
-    public function setStringValue(?string $stringValue): TestEntity
+    public function setStringValue(?string $stringValue): EncryptionEntity
     {
         $this->stringValue = $stringValue;
 
@@ -101,7 +87,7 @@ class TestEntity
         return $this->dateTimeValue;
     }
 
-    public function setDateTimeValue(?\DateTime $dateTimeValue): TestEntity
+    public function setDateTimeValue(?\DateTime $dateTimeValue): EncryptionEntity
     {
         $this->dateTimeValue = $dateTimeValue;
 

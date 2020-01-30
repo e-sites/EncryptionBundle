@@ -17,18 +17,7 @@ class EncryptionCest
 
     public function _before(FunctionalTester $I): void
     {
-        $config = new Configuration();
-        $config->setEntityNamespaces(array('EncryptionBundleTests' => 'EncryptionBundle\Tests\Entity'));
-        $config->setAutoGenerateProxyClasses(true);
-        $config->setProxyDir(\sys_get_temp_dir());
-        $config->setProxyNamespace('EncryptionBundleTests\Entity');
-        $config->setQueryCacheImpl(new ArrayCache());
-        $config->setMetadataCacheImpl(new ArrayCache());
 
-        $params = array(
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        );
 
         $this->entityManager = EntityManager::create($params, $config);;
 
